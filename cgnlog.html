@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TürkGamerTR</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body,html{height:100%;font-family:Arial,sans-serif;background:url('https://seeklogo.com/images/C/cgn-logo-343599F0BA-seeklogo.com.png') center/cover no-repeat fixed;color:white;overflow-x:hidden;}
+  #login-screen{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.7);z-index:100;}
+  #login-box{background:rgba(34,34,34,0.95);padding:30px;border-radius:15px;text-align:center;border:3px solid #ff4500;box-shadow:0 0 30px #ff4500,0 0 50px #ff4500 inset;}
+  #login-box input{display:block;margin:12px auto;padding:10px;border-radius:6px;border:none;width:220px;background:#444;color:white;font-size:15px;}
+  #login-box button{padding:10px 20px;border:none;background:#ff4500;color:white;border-radius:6px;cursor:pointer;font-size:15px;margin-top:6px;}
+  #login-box button:hover{background:#ff7f50;}
+  #register-link{display:block;margin-top:8px;color:#fff;text-decoration:underline;cursor:pointer;}
+  #site{display:none;opacity:0;transition:opacity 0.5s ease;}
+  header{background:rgba(34,34,34,0.95);padding:12px;text-align:center;}
+  header img{height:60px;}
+  nav{background:rgba(51,51,51,0.95);padding:10px;text-align:center;}
+  nav a{text-decoration:none;font-weight:bold;margin:0 10px;color:white;transition:0.3s;}
+  nav a:hover{color:#ff4500;}
+  main{display:flex;flex-wrap:wrap;margin:20px;gap:20px;}
+  section{flex:3;min-width:250px;background:rgba(26,26,26,0.85);padding:20px;border-radius:12px;box-shadow:0 0 20px #ff4500;position:relative;overflow:hidden;}
+  aside{flex:1;min-width:200px;background:rgba(26,26,26,0.85);padding:20px;border-radius:12px;box-shadow:0 0 20px #ff4500;height:fit-content;}
+  #game-slider{position:relative;width:100%;height:250px;margin-top:20px;overflow:hidden;border-radius:12px;}
+  #game-slider img{position:absolute;width:100%;height:100%;object-fit:cover;border-radius:12px;opacity:0;transform:scale(1);transition:opacity 1s ease, transform 1s ease;}
+  #game-slider img.active{opacity:1;transform:scale(1.05);}
+  #slider-caption{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);padding:10px 20px;border-radius:8px;font-size:16px;text-align:center;max-width:90%;}
+  #slider-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:10px;}
+  #slider-dots span{width:12px;height:12px;background:rgba(255,255,255,0.5);border-radius:50%;cursor:pointer;transition:all 0.3s ease;}
+  #slider-dots span.active{background:#ff4500;transform:scale(1.2);}
+  @media(max-width:768px){main{flex-direction:column;}aside{margin-left:0;margin-top:20px;}#game-slider{height:200px;}#slider-caption{font-size:14px;}}
+  /* small profile area */
+  #top-right{position:absolute;right:18px;top:18px;color:#fff;}
+  #logoutBtn{background:#333;border:none;padding:8px 12px;border-radius:6px;color:#fff;cursor:pointer;margin-left:8px;}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <img src="https://seeklogo.com/images/C/cgn-logo-343599F0BA-seeklogo.com.png" alt="CGN Logo" style="height:100px;margin-bottom:20px;">
+  <div id="login-box">
+    <h2>Giriş Yap</h2>
+    <input type="text" id="username" placeholder="Kullanıcı Adı">
+    <input type="password" id="password" placeholder="Şifre">
+    <div>
+      <button id="loginBtn">Giriş</button>
+      <button id="showRegisterBtn" style="background:#444;margin-left:8px;">Kayıt Ol</button>
+    </div>
+    <a id="register-link">Kayıt olmak için tıklayın</a>
+  </div>
+</div>
+
+<!-- Register modal (basit) -->
+<div id="register-screen" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:110;align-items:center;justify-content:center;">
+  <div style="background:#222;padding:24px;border-radius:12px;border:3px solid #ff4500;width:320px;margin:auto;">
+    <h3 style="text-align:center;color:#fff;">Hesap Oluştur</h3>
+    <input id="reg_username" placeholder="Kullanıcı Adı" style="width:100%;margin:8px 0;padding:8px;border-radius:6px;border:none;background:#444;color:white;">
+    <input id="reg_password" type="password" placeholder="Şifre" style="width:100%;margin:8px 0;padding:8px;border-radius:6px;border:none;background:#444;color:white;">
+    <input id="reg_display" placeholder="Görünen İsim (opsiyonel)" style="width:100%;margin:8px 0;padding:8px;border-radius:6px;border:none;background:#444;color:white;">
+    <div style="text-align:center;margin-top:8px;">
+      <button id="registerBtn" style="background:#ff4500;border:none;padding:8px 14px;border-radius:6px;color:#fff;cursor:pointer;">Kayıt Ol</button>
+      <button id="regCancel" style="background:#444;border:none;padding:8px 14px;border-radius:6px;color:#fff;cursor:pointer;margin-left:8px;">İptal</button>
+    </div>
+  </div>
+</div>
+
+<div id="site">
+  <div id="top-right"></div>
+  <header>
+    <img src="https://seeklogo.com/images/C/cgn-logo-343599F0BA-seeklogo.com.png" alt="CGN Logo">
+  </header>
+  <nav>
+    <a href="#">Oyun Bölümleri</a>
+    <a href="#">İpuçları</a>
+    <a href="#">Forum</a>
+    <a href="#">Hakkında</a>
+    <a href="https://www.youtube.com/@T%C3%BCrkGamerTR-n7s" target="_blank">YouTube Kanalı</a>
+  </nav>
+  <main>
+    <section>
+      <h2>Oyun Bölümleri</h2>
+      <p>Minecraft, küplerden oluşan sınırsız bir dünyada inşa etme, keşfetme ve hayatta kalma üzerine kurulu popüler bir oyun alanıdır...</p>
+      <div id="game-slider">
+        <img src="https://cdn.pixabay.com/photo/2016/03/26/22/21/minecraft-1284354_960_720.png" class="active" alt="Minecraft Yaratıcı">
+        <img src="https://cdn.pixabay.com/photo/2015/11/16/16/28/minecraft-1044220_960_720.png" alt="Minecraft Keşif">
+        <img src="https://cdn.pixabay.com/photo/2016/03/26/22/22/minecraft-1284355_960_720.png" alt="Minecraft Survival">
+        <div id="slider-caption">Yaratıcı Mod: Hayalindeki yapıları inşa et!</div>
+        <div id="slider-dots"></div>
+      </div>
+    </section>
+    <aside>
+      <h2>Hakkında</h2>
+      <p>Çağan OK profesyonel bir oyuncudur.</p>
+      <div id="profile-area" style="margin-top:12px;"></div>
+    </aside>
+  </main>
+</div>
+
+<script>
+(async function(){
+  // CSRF token helper
+  let CSRF = null;
+  async function ensureCsrf(){
+    if(CSRF) return CSRF;
+    try{
+      const r = await fetch('/api/csrf-token', { credentials: 'same-origin' });
+      const j = await r.json();
+      CSRF = j.csrfToken;
+      return CSRF;
+    }catch(e){
+      console.warn('CSRF token alınamadı', e);
+      return null;
+    }
+  }
+
+  // UI elements
+  const loginScreen = document.getElementById('login-screen');
+  const site = document.getElementById('site');
+  const loginBtn = document.getElementById('loginBtn');
+  const showRegisterBtn = document.getElementById('showRegisterBtn');
+  const registerLink = document.getElementById('register-link');
+  const registerScreen = document.getElementById('register-screen');
+  const registerBtn = document.getElementById('registerBtn');
+  const regCancel = document.getElementById('regCancel');
+  const topRight = document.getElementById('top-right');
+  const profileArea = document.getElementById('profile-area');
+
+  // Slider setup (your existing slider)
+  const slides=document.querySelectorAll("#game-slider img");
+  const captions=[
+    "Yaratıcı Mod: Hayalindeki yapıları inşa et!",
+    "Keşif Modu: Dünyayı keşfet ve maceraya atıl!",
+    "Hayatta Kalma Modu: Düşmanlardan korun ve kaynak topla!"
+  ];
+  const captionDiv=document.getElementById("slider-caption");
+  const dotsContainer=document.getElementById("slider-dots");
+  let currentIndex=0;
+  slides.forEach((s,i)=>{
+    const dot=document.createElement("span");
+    if(i===0) dot.classList.add("active");
+    dot.addEventListener("click",()=>{goToSlide(i);});
+    dotsContainer.appendChild(dot);
+  });
+  function goToSlide(index){
+    slides.forEach(s=>s.classList.remove("active"));
+    slides[index].classList.add("active");
+    currentIndex=index;
+    captionDiv.textContent=captions[index];
+    document.querySelectorAll("#slider-dots span").forEach(s=>s.classList.remove("active"));
+    document.querySelectorAll("#slider-dots span")[index].classList.add("active");
+  }
+  setInterval(()=>{ let next=(currentIndex+1)%slides.length; goToSlide(next); },4000);
+
+  // Check session on load
+  try{
+    const r = await fetch('/api/me', { credentials: 'same-origin' });
+    const j = await r.json();
+    if(j.loggedIn){
+      showSite(j.username);
+    } else {
+      loginScreen.style.display = 'flex';
+    }
+  }catch(e){
+    console.warn('Session check failed', e);
+    loginScreen.style.display = 'flex';
+  }
+
+  // Login handler
+  loginBtn.addEventListener('click', async () => {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    if(!username || !password) return alert('Kullanıcı adı ve şifre girin.');
+
+    await ensureCsrf();
+    try{
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json', 'CSRF-Token': CSRF || ''},
+        credentials: 'same-origin',
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if(res.ok && data.ok){
+        showSite(data.username);
+      } else {
+        alert(data.error || 'Giriş başarısız.');
+      }
+    }catch(e){
+      console.error(e);
+      alert('Sunucuya bağlanırken hata oluştu.');
+    }
+  });
+
+  // Show register
+  showRegisterBtn.addEventListener('click', () => {
+    registerScreen.style.display = 'flex';
+    registerScreen.style.alignItems = 'center';
+    registerScreen.style.justifyContent = 'center';
+  });
+  registerLink.addEventListener('click', () => showRegisterBtn.click());
+  regCancel.addEventListener('click', () => registerScreen.style.display = 'none');
+
+  // Register handler
+  registerBtn.addEventListener('click', async () => {
+    const username = document.getElementById('reg_username').value.trim();
+    const password = document.getElementById('reg_password').value;
+    const display = document.getElementById('reg_display').value.trim();
+    if(!username || !password) return alert('Kullanıcı adı ve şifre girin.');
+    if(password.length < 6) return alert('Şifre en az 6 karakter olmalı.');
+
+    await ensureCsrf();
+    try{
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json', 'CSRF-Token': CSRF || ''},
+        credentials: 'same-origin',
+        body: JSON.stringify({ username, password, display_name: display })
+      });
+      const data = await res.json();
+      if(res.ok && data.ok){
+        registerScreen.style.display = 'none';
+        showSite(data.username);
+      } else {
+        alert(data.error || 'Kayıt başarısız.');
+      }
+    }catch(e){
+      console.error(e);
+      alert('Sunucuya bağlanırken hata oluştu.');
+    }
+  });
+
+  // Show site UI
+  function showSite(username){
+    loginScreen.style.display = 'none';
+    site.style.display = 'block';
+    setTimeout(()=>site.style.opacity=1,50);
+    topRight.innerHTML = `<span>Merhaba, <strong>${escapeHtml(username)}</strong></span>
+                          <button id="logoutBtn">Çıkış</button>`;
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    loadProfile();
+  }
+
+  // Logout
+  async function logout(){
+    await ensureCsrf();
+    try{
+      const res = await fetch('/api/logout', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','CSRF-Token': CSRF || ''},
+        credentials: 'same-origin'
+      });
+      const j = await res.json();
+      if(res.ok && j.ok){
+        location.reload();
+      } else {
+        alert('Çıkış yapılamadı.');
+      }
+    }catch(e){
+      console.error(e);
+      alert('Sunucuya bağlanırken hata oluştu.');
+    }
+  }
+
+  async function loadProfile(){
+    try{
+      const r = await fetch('/api/profile', { credentials: 'same-origin' });
+      if(r.ok){
+        const j = await r.json();
+        const p = j.profile;
+        profileArea.innerHTML = `<strong>${escapeHtml(p.display_name || p.username)}</strong><br>Kullanıcı: ${escapeHtml(p.username)}<br>Oluşturulma: ${escapeHtml(p.created_at)}`;
+      } else {
+        profileArea.innerHTML = 'Profil yüklenemedi.';
+      }
+    }catch(e){
+      console.warn('Profil yüklenemedi', e);
+    }
+  }
+
+  // small helper
+  function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
+
+})();
+</script>
+
+</body>
+</html>
